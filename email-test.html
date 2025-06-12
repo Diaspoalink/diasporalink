@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DiasporaLink Email Service Test</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: #f9fafb;
+      color: #1f2937;
+      line-height: 1.6;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    
+    h1 {
+      font-size: 2rem;
+      color: #2563eb;
+      margin-bottom: 0.5rem;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 10px;
+    }
+    
+    h2 {
+      font-size: 1.5rem;
+      color: #374151;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    
+    p {
+      margin-bottom: 1rem;
+    }
+    
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid #e5e7eb;
+      margin-bottom: 20px;
+    }
+    
+    .tab {
+      padding: 12px 24px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    
+    .tab.active {
+      border-bottom: 3px solid #2563eb;
+      color: #2563eb;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #4b5563;
+    }
+    
+    input, textarea, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+    
+    input:focus, textarea:focus, select:focus {
+      border-color: #2563eb;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    textarea {
+      min-height: 120px;
+    }
+    
+    button {
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.2s;
+    }
+    
+    button:hover {
+      background-color: #1d4ed8;
+    }
+    
+    button:disabled {
+      background-color: #93c5fd;
+      cursor: not-allowed;
+    }
+    
+    .results {
+      background-color: #f3f4f6;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      margin-top: 20px;
+      white-space: pre-wrap;
+      font-family: monospace;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .log {
+      margin-bottom: 5px;
+      padding: 4px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .log-info {
+      color: #1d4ed8;
+    }
+    
+    .log-error {
+      color: #dc2626;
+    }
+    
+    .log-warning {
+      color: #d97706;
+    }
+    
+    .status {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-align: center;
+    }
+    
+    .status-pending {
+      background-color: #dbeafe;
+      color: #1e40af;
+    }
+    
+    .status-success {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+    
+    .status-error {
+      background-color: #fee2e2;
+      color: #b91c1c;
+    }
+    
+    .loader {
+      display: none;
+      border: 3px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 3px solid #2563eb;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      margin-right: 10px;
+      display: inline-block;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>DiasporaLink Email Service Test</h1>
+    <p>Use this tool to test the email functionality for the DiasporaLink website.</p>
+    
+    <div class="tabs">
+      <div class="tab active" data-tab="automated">Automated Tests</div>
+      <div class="tab" data-tab="manual">Manual Test</div>
+    </div>
+    
+    <div id="automated-tab" class="tab-content active">
+      <h2>Run Automated Email Tests</h2>
+      <p>This will execute a series of tests to verify that the email service is working correctly.</p>
+      
+      <button id="run-tests">Run Automated Tests</button>
+      
+      <div id="test-status" class="status status-pending hidden">
+        <span id="status-loader" class="loader"></span>
+        <span id="status-text">Ready to test</span>
+      </div>
+      
+      <div id="test-results" class="results hidden"></div>
+    </div>
+    
+    <div id="manual-tab" class="tab-content">
+      <h2>Manual Email Test</h2>
+      <p>Send a test email using the contact form format.</p>
+      
+      <form id="test-form">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" value="Test User" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" value="test@example.com" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <select id="subject" required>
+            <option value="general">General Inquiry</option>
+            <option value="support">Technical Support</option>
+            <option value="partnership">Partnership Opportunity</option>
+            <option value="feedback">Feedback</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" required>This is a test message from the DiasporaLink email test page.</textarea>
+        </div>
+        
+        <button type="submit" id="send-test">Send Test Email</button>
+      </form>
+      
+      <div id="manual-status" class="status status-pending hidden">
+        <span id="manual-status-loader" class="loader"></span>
+        <span id="manual-status-text">Ready to send</span>
+      </div>
+      
+      <div id="manual-results" class="results hidden"></div>
+    </div>
+  </div>
+  
+  <script type="module">
+    // Import the test functions
+    import { testEmailService, runInBrowser } from './test-email-service.js';
+    import { sendEmailWithKit } from './src/services/EmailService.js';
+    
+    // Tab switching functionality
+    const tabs = document.querySelectorAll('.tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        // Remove active class from all tabs and content
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        // Add active class to clicked tab and corresponding content
+        const tabName = tab.dataset.tab;
+        tab.classList.add('active');
+        document.getElementById(`${tabName}-tab`).classList.add('active');
+      });
+    });
+    
+    // Automated tests
+    const runTestsBtn = document.getElementById('run-tests');
+    const testStatus = document.getElementById('test-status');
+    const statusText = document.getElementById('status-text');
+    const testResults = document.getElementById('test-results');
+    
+    runTestsBtn.addEventListener('click', async () => {
+      // Show status and results container
+      testStatus.classList.remove('hidden');
+      testResults.classList.remove('hidden');
+      testResults.innerHTML = '';
+      
+      // Set status to running
+      statusText.textContent = 'Running tests...';
+      testStatus.className = 'status status-pending';
+      runTestsBtn.disabled = true;
+      
+      // Override console methods to capture output
+      const originalLog = console.log;
+      const originalError = console.error;
+      const originalWarn = console.warn;
+      
+      function addLogMessage(text, type = 'info') {
+        const logEntry = document.createElement('div');
+        logEntry.className = `log log-${type}`;
+        logEntry.textContent = text;
+        testResults.appendChild(logEntry);
+        testResults.scrollTop = testResults.scrollHeight;
+      }
+      
+      console.log = function(...args) {
+        originalLog.apply(console, args);
+        addLogMessage(args.join(' '), 'info');
+      };
+      
+      console.error = function(...args) {
+        originalError.apply(console, args);
+        addLogMessage(args.join(' '), 'error');
+      };
+      
+      console.warn = function(...args) {
+        originalWarn.apply(console, args);
+        addLogMessage(args.join(' '), 'warning');
+      };
+      
+      try {
+        await testEmailService();
+        
+        // Set status to success
+        statusText.textContent = 'All tests completed!';
+        testStatus.className = 'status status-success';
+      } catch (error) {
+        console.error('Test execution error:', error);
+        
+        // Set status to error
+        statusText.textContent = 'Tests failed!';
+        testStatus.className = 'status status-error';
+      } finally {
+        // Restore console methods
+        console.log = originalLog;
+        console.error = originalError;
+        console.warn = originalWarn;
+        runTestsBtn.disabled = false;
+      }
+    });
+    
+    // Manual test form
+    const testForm = document.getElementById('test-form');
+    const manualStatus = document.getElementById('manual-status');
+    const manualStatusText = document.getElementById('manual-status-text');
+    const manualResults = document.getElementById('manual-results');
+    
+    testForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const subjectValue = document.getElementById('subject').value;
+      const message = document.getElementById('message').value;
+      
+      // Get subject label
+      const subjectSelect = document.getElementById('subject');
+      const subjectLabel = subjectSelect.options[subjectSelect.selectedIndex].text;
+      
+      // Show status and results container
+      manualStatus.classList.remove('hidden');
+      manualResults.classList.remove('hidden');
+      manualResults.innerHTML = '';
+      
+      // Set status to sending
+      manualStatusText.textContent = 'Sending email...';
+      manualStatus.className = 'status status-pending';
+      document.getElementById('send-test').disabled = true;
+      
+      // Build email body similar to the contact form
+      const emailBody = `
+        <h2>New Contact Form Submission</h2>
+        <p><strong>From:</strong> ${name} (${email})</p>
+        <p><strong>Subject:</strong> ${subjectLabel}</p>
+        <p><strong>Message:</strong></p>
+        <div style="padding: 15px; background-color: #f9f9f9; border-left: 3px solid #2c3e50; margin: 10px 0;">
+          ${message.replace(/\n/g, '<br>')}
+        </div>
+        <p><small>This message was sent from the DiasporaLink email test page.</small></p>
+      `;
+      
+      // Override console methods to capture output
+      const originalLog = console.log;
+      const originalError = console.error;
+      const originalWarn = console.warn;
+      
+      function addLogMessage(text, type = 'info') {
+        const logEntry = document.createElement('div');
+        logEntry.className = `log log-${type}`;
+        logEntry.textContent = text;
+        manualResults.appendChild(logEntry);
+        manualResults.scrollTop = manualResults.scrollHeight;
+      }
+      
+      console.log = function(...args) {
+        originalLog.apply(console, args);
+        addLogMessage(args.join(' '), 'info');
+      };
+      
+      console.error = function(...args) {
+        originalError.apply(console, args);
+        addLogMessage(args.join(' '), 'error');
+      };
+      
+      console.warn = function(...args) {
+        originalWarn.apply(console, args);
+        addLogMessage(args.join(' '), 'warning');
+      };
+      
+      try {
+        // Send the test email
+        console.log(`Sending test email to support@diasporalink.net`);
+        console.log(`From: ${name} (${email})`);
+        console.log(`Subject: ${subjectLabel}`);
+        
+        const result = await sendEmailWithKit(
+          'support@diasporalink.net',
+          `[TEST] ${subjectLabel} - ${name}`,
+          emailBody
+        );
+        
+        console.log('Email result:', JSON.stringify(result, null, 2));
+        
+        // Set status to success
+        manualStatusText.textContent = 'Email sent successfully!';
+        manualStatus.className = 'status status-success';
+      } catch (error) {
+        console.error('Error sending email:', error);
+        
+        // Set status to error
+        manualStatusText.textContent = 'Failed to send email!';
+        manualStatus.className = 'status status-error';
+      } finally {
+        // Restore console methods
+        console.log = originalLog;
+        console.error = originalError;
+        console.warn = originalWarn;
+        document.getElementById('send-test').disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
